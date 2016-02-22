@@ -28,7 +28,9 @@ public class MusicPlayerVeiwer extends Application
     private final double RESOLUTION_X = screenSize.getWidth();
     private final double RESOLUTION_Y = screenSize.getHeight();
     private final double SCALE = 8; // Scalling the geometry
-    private final double TEXT_SPACING = RESOLUTION_X / 4; // Spacing between the labels and Music buttons
+    private final double TEXT_SPACING = RESOLUTION_X / 3; // Spacing between the labels and Music buttons
+    private final double BUTTONINDENT = 0.5;
+    
     
     // Javafx Panes for all the differnt sections in the program
     private Pane playListPane   = new Pane();
@@ -47,9 +49,9 @@ public class MusicPlayerVeiwer extends Application
     private final Color     GREY  = Color.DIMGRAY;
     private final Rectangle TOPBAR = new Rectangle(0,0, RESOLUTION_X, RESOLUTION_Y / SCALE );
     private final Rectangle BOTTOMBAR = new Rectangle(0, RESOLUTION_Y - RESOLUTION_Y / SCALE, RESOLUTION_X, RESOLUTION_Y / SCALE);
-    private final Label     PLAYLISTLABEL = new Label("Playlist");
-    private final Label     MUSICLABEL    = new Label("Music");
-    private final Label     SONGLABEL     = new Label("Songs");
+    private final labelButton     PLAYLISTLABEL = new labelButton("Playlist");
+    private final labelButton     MUSICLABEL    = new labelButton("Music");
+    private final labelButton     SONGLABEL     = new labelButton("Songs");
     
     @Override
     public void start(Stage stage)
@@ -61,13 +63,12 @@ public class MusicPlayerVeiwer extends Application
         TOPBAR.setFill(GREY);
         BOTTOMBAR.setFill(GREY);
         
-        setPos(SONGLABEL, TEXT_SPACING * 4,     (RESOLUTION_Y / TEXT_SPACING) + TEXT_SPACING / SCALE);
-        setPos(MUSICLABEL, TEXT_SPACING * 3,    (RESOLUTION_Y / TEXT_SPACING) + TEXT_SPACING / SCALE);
-        setPos(PLAYLISTLABEL, TEXT_SPACING * 2, (RESOLUTION_Y / TEXT_SPACING) + TEXT_SPACING / SCALE);
-        setScale(SONGLABEL, SCALE);
-        setScale(MUSICLABEL, SCALE);
-        setScale(PLAYLISTLABEL, SCALE);
-        
+        setPos(SONGLABEL, TEXT_SPACING * 2,     (RESOLUTION_Y / ( 5 * SCALE)));
+        setPos(MUSICLABEL, TEXT_SPACING * 1.5,    (RESOLUTION_Y / ( 5 * SCALE)));
+        setPos(PLAYLISTLABEL, TEXT_SPACING, (RESOLUTION_Y / ( 5 * SCALE)));
+        setScale(SONGLABEL, SCALE / 2);
+        setScale(MUSICLABEL, SCALE / 2);
+        setScale(PLAYLISTLABEL, SCALE / 2);
         
         
         stage.setScene(mainScene);
@@ -107,6 +108,61 @@ public class MusicPlayerVeiwer extends Application
     {
         Application.launch(args);
     }
+    
+    
+}
+
+class labelButton<E> extends Label
+{
+    E e; // Object associated with this button
+    double indent = 0.2;
+    final Color ORIGINAL = Color.WHITE;
+    final Color PRESSED  = Color.LIGHTGRAY; 
+    
+    public labelButton(String lbl)
+    {
+        super(lbl);
+        setIndent(indent);
+    }
+    
+    public labelButton(String lbl, E e)
+    {
+        super(lbl);
+        this.e = e;     
+    }
+    
+    public labelButton(String lbl, E e, double indent)
+    {
+        super(lbl);
+        this.e = e;
+        this.indent = indent;
+    }
+    
+    public E getObject()
+    {
+        return e;
+    }
+    
+    private void setIndent(double indent)
+    {
+        this.indent = indent;
+        setOnMousePressed( ev ->
+        {
+            setScaleX(getScaleX() - indent);
+            setScaleY(getScaleY() - indent);
+            setTextFill(PRESSED);
+        });
+        
+        setOnMouseReleased( ev -> 
+        {
+            setScaleX(getScaleX() + indent);
+            setScaleY(getScaleY() + indent);
+            setTextFill(ORIGINAL);
+        });
+    }
+    
+
+    
     
     
 }
