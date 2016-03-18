@@ -9,12 +9,14 @@ public class MusicPlayerProcessor
     private Queue<File>            songQueue        = new LinkedList<>(); // Queue for queueing playlists
     private Queue<File>            playQueue        = new LinkedList<>(); // Queue for queueing specific songs
     private File                   musicFile;
+    private File[]                 songFiles;
     private FileFilter             musicFilter      = new MusicFileFilter();
     
     public MusicPlayerProcessor(File file)
     {
         musicFile = file;
-        getMusic(file);
+        songFiles = getMusic(file);
+        
     }
     
     public File[] getMusic(File musicFile)
@@ -53,8 +55,6 @@ class MusicFileFilter implements FileFilter
         if(fileExtension.equals(".mp3") || fileExtension.equals(".wav") || fileExtension.equals(".mp4") || fileExtension.equals(".mp4a"))
         {
             return true;
-        }
-        
-        return false;
+        }else { return false; }
     }
 }

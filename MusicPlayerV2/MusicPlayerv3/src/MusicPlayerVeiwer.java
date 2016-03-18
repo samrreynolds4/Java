@@ -14,6 +14,7 @@ import javafx.geometry.*;
 import java.awt.Toolkit;
 import java.awt.Dimension;
 import java.io.File;
+import java.util.*;
 
 import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
@@ -35,9 +36,9 @@ public class MusicPlayerVeiwer extends Application
     // Javafx Panes for all the differnt sections in the program
     private Pane playListPane   = new Pane();
     private Pane songPane       = new Pane();
-    private Pane explorePane    = new Pane();
+    private Pane musicPane      = new Pane();
     private Group defaultLayout = new Group();
-    private Scene mainScene     = new Scene(explorePane, RESOLUTION_X, RESOLUTION_Y);
+    private Scene mainScene     = new Scene(musicPane, RESOLUTION_X, RESOLUTION_Y);
     
     
     
@@ -48,10 +49,10 @@ public class MusicPlayerVeiwer extends Application
     private final Color     WHITE = Color.WHITE;
     private final Color     GREY  = Color.DIMGRAY;
     private final Rectangle TOPBAR = new Rectangle(0,0, RESOLUTION_X, RESOLUTION_Y / SCALE );
-    private final Rectangle BOTTOMBAR = new Rectangle(0, RESOLUTION_Y - RESOLUTION_Y / SCALE, RESOLUTION_X, RESOLUTION_Y / SCALE);
-    private final labelButton     PLAYLISTLABEL = new labelButton("Playlist");
-    private final labelButton     MUSICLABEL    = new labelButton("Music");
-    private final labelButton     SONGLABEL     = new labelButton("Songs");
+    private final Rectangle BOTTOMBAR = new Rectangle(0, RESOLUTION_Y / SCALE, RESOLUTION_X, RESOLUTION_Y / SCALE);
+    private final labelButton<Pane>     PLAYLISTLABEL = new labelButton<>("Playlist", playListPane, BUTTONINDENT);
+    private final labelButton<Pane>     MUSICLABEL    = new labelButton<>("Music", musicPane, BUTTONINDENT);
+    private final labelButton<Pane>     SONGLABEL     = new labelButton<>("Songs", songPane, BUTTONINDENT);
     
     @Override
     public void start(Stage stage)
@@ -60,25 +61,37 @@ public class MusicPlayerVeiwer extends Application
         PLAYLISTLABEL.setTextFill(WHITE);
         SONGLABEL.setTextFill(WHITE);
         MUSICLABEL.setTextFill(WHITE);
-        TOPBAR.setFill(GREY);
+        TOPBAR.setFill(BLACK);
         BOTTOMBAR.setFill(GREY);
-        
-        setPos(SONGLABEL, TEXT_SPACING * 2,     (RESOLUTION_Y / ( 5 * SCALE)));
-        setPos(MUSICLABEL, TEXT_SPACING * 1.5,    (RESOLUTION_Y / ( 5 * SCALE)));
-        setPos(PLAYLISTLABEL, TEXT_SPACING, (RESOLUTION_Y / ( 5 * SCALE)));
+        System.out.print(RESOLUTION_Y / ( 3 * SCALE));
+        System.out.println(TEXT_SPACING);
+        setPos(SONGLABEL, TEXT_SPACING * 2,     (RESOLUTION_Y / ( SCALE * 3 )));
+        setPos(MUSICLABEL, TEXT_SPACING * 1.5,  (RESOLUTION_Y / ( SCALE * 3 )));
+        setPos(PLAYLISTLABEL, TEXT_SPACING,     (RESOLUTION_Y / ( SCALE * 3 )));
         setScale(SONGLABEL, SCALE / 2);
         setScale(MUSICLABEL, SCALE / 2);
         setScale(PLAYLISTLABEL, SCALE / 2);
         
-        
+        mainScene.setRoot(musicPane);
         stage.setScene(mainScene);
+        
+        PLAYLISTLABEL.setOnMouseClicked( me ->
+        {
+            System.out.print("Clicked");
+        });
+        
         addToLayout(TOPBAR);
         addToLayout(BOTTOMBAR);
         addToLayout(PLAYLISTLABEL);
         addToLayout(SONGLABEL);
         addToLayout(MUSICLABEL);
-        addToPane(explorePane, defaultLayout);
+        addToPane(songPane, defaultLayout);
+        addToPane(playListPane, defaultLayout);
+        addToPane(musicPane, defaultLayout);
         
+        
+        
+        System.out.println(defaultLayout.getChildren());
         stage.show();
     }
     
@@ -101,6 +114,7 @@ public class MusicPlayerVeiwer extends Application
     
     public void addToLayout(javafx.scene.Node node)
     {
+        
         defaultLayout.getChildren().add(node);
     }
     
@@ -112,6 +126,7 @@ public class MusicPlayerVeiwer extends Application
     
 }
 
+// labelButton class covers all the GUI functions of when the button is pressed
 class labelButton<E> extends Label
 {
     E e; // Object associated with this button
@@ -128,7 +143,8 @@ class labelButton<E> extends Label
     public labelButton(String lbl, E e)
     {
         super(lbl);
-        this.e = e;     
+        this.e = e;
+        setIndent(indent);
     }
     
     public labelButton(String lbl, E e, double indent)
@@ -136,6 +152,7 @@ class labelButton<E> extends Label
         super(lbl);
         this.e = e;
         this.indent = indent;
+        setIndent(indent);
     }
     
     public E getObject()
@@ -160,9 +177,4 @@ class labelButton<E> extends Label
             setTextFill(ORIGINAL);
         });
     }
-    
-
-    
-    
-    
 }
